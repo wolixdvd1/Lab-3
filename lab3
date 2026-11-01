@@ -42,7 +42,6 @@ def draw_umbrella(canvas, cx, cy, size=1.0):
         )
 
 
-    # --- Стержень зонтика ---
     rod_top    = dome_top_y
     rod_bottom = cy + int(55 * size)
     canvas.create_line(
@@ -51,7 +50,6 @@ def draw_umbrella(canvas, cx, cy, size=1.0):
     )
 
 
-    # --- Подпись ---
     canvas.create_text(
         cx, rod_bottom + int(45 * size),
         text="UMBRELLA", fill=RED,
@@ -81,10 +79,8 @@ def main():
                     fill="#9ceaff", outline=""
                 )
 
-    # --- Полноценный рисунок зонтика справа ---
     draw_umbrella(canvas, cx=470, cy=170, size=1.0)
 
-    # Основная панель с генератором
     panel = ttk.Frame(window, padding=18)
     panel.place(x=28, y=72)
 

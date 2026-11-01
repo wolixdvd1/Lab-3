@@ -1,0 +1,110 @@
+import random
+import tkinter as tk
+from tkinter import ttk
+
+
+ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+
+def char_weight(char):
+    if char.isalpha():
+        return ord(char) - ord('A') + 1
+    return int(char) + 1
+
+
+def make_block():
+    while True:
+        block = "".join(random.choice(ALPHABET) for _ in range(4))
+        average = sum(char_weight(c) for c in block) / 4
+        if 10 <= average <= 15:
+            return block
+
+
+def make_key():
+    return f"{make_block()}-{make_block()}-{make_block()}"
+
+
+def draw_umbrella(canvas, cx, cy, size=1.0):
+    RED   = "#c81e1e"
+    WHITE = "#e8e8e8"
+    DARK  = "#5a0e0e"
+
+    dome_r = int(70 * size)
+    dome_top_y = cy - int(10 * size)   # верх купола
+    for i in range(8):
+        start = i * 45
+        color = RED if i % 2 == 0 else WHITE
+        canvas.create_arc(
+            cx - dome_r, dome_top_y - dome_r,
+            cx + dome_r, dome_top_y + dome_r,
+            start=start, extent=45,
+            fill=color, outline=DARK, width=1
+        )
+
+
+    # --- Стержень зонтика ---
+    rod_top    = dome_top_y
+    rod_bottom = cy + int(55 * size)
+    canvas.create_line(
+        cx, rod_top, cx, rod_bottom,
+        fill="#3a2a1a", width=3
+    )
+
+
+    # --- Подпись ---
+    canvas.create_text(
+        cx, rod_bottom + int(45 * size),
+        text="UMBRELLA", fill=RED,
+        font=("Courier New", int(12 * size), "bold")
+    )
+    canvas.create_text(
+        cx, rod_bottom + int(60 * size),
+        text="CORPORATION", fill="#7a7a7a",
+        font=("Courier New", int(8 * size))
+    )
+
+
+def main():
+    window = tk.Tk()
+    window.title("Umbrella Corp · Keygen · вариант 6")
+    window.geometry("640x400")
+    window.resizable(False, False)
+    canvas = tk.Canvas(window, bg="#101426", highlightthickness=0)
+    canvas.place(relwidth=1, relheight=1)
+
+    for row in range(10):
+        for col in range(15):
+            if (row + col * 3) % 7 == 0:
+                canvas.create_rectangle(
+                    24 + col * 42, 20 + row * 37,
+                    27 + col * 42, 23 + row * 37,
+                    fill="#9ceaff", outline=""
+                )
+
+    # --- Полноценный рисунок зонтика справа ---
+    draw_umbrella(canvas, cx=470, cy=170, size=1.0)
+
+    # Основная панель с генератором
+    panel = ttk.Frame(window, padding=18)
+    panel.place(x=28, y=72)
+
+    ttk.Label(panel, text="UMBRELLA CORP. KEYGEN",
+              font=("TkDefaultFont", 18, "bold")).pack(anchor="w")
+    ttk.Label(panel, text="Формат ключа: XXXX-XXXX-XXXX").pack(anchor="w", pady=(12, 2))
+
+    result = tk.StringVar()
+    status = tk.StringVar()
+
+    def generate():
+        result.set(make_key())
+        status.set("Ключ сгенерирован")
+
+    ttk.Button(panel, text="Сгенерировать", command=generate).pack(anchor="w", pady=12)
+    ttk.Entry(panel, textvariable=result, state="readonly", width=28).pack(anchor="w")
+    ttk.Label(panel, textvariable=status, foreground="#b92338").pack(anchor="w")
+
+    window.mainloop()
+
+
+if __name__ == "__main__":
+    main()
